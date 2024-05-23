@@ -166,3 +166,4 @@ pylint-report.txt
 docker-compose.override.yml
 
 # Files added by me
+data/
