@@ -7,7 +7,7 @@ from utils.recommend_books import get_books_recommendations_1_book_rs
 
 
 def recommend_books(book_name):
-    # read the necessary data
+    # Read the necessary data
     books_df = pd.read_csv('../data/processed_data/Books.csv')
     pivot_table = pickle.load(open('../artifacts/pivot_table.pkl', 'rb'))
     similarity_scores = pickle.load(open('../artifacts/similarity_scores.pkl', 'rb'))
