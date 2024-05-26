@@ -1,10 +1,7 @@
-import pickle
-
 import numpy as np
-import pandas as pd
 
 
-def recommend_book(books_df, book_name, pivot_table, similarity_scores, recommend_books_no=5,
+def get_books_recommendations_1_book_rs(books_df, book_name, pivot_table, similarity_scores, recommend_books_no=5,
                    books_df_cols={
                       'book_isbn': 'isbn',
                       'book_title': 'title',
@@ -53,30 +50,3 @@ def recommend_book(books_df, book_name, pivot_table, similarity_scores, recommen
         data.append(item)
     
     return data
-
-
-def main():
-    # read the necessary data
-    books_df = pd.read_csv('data/processed_data/Books.csv')
-    pivot_table = pickle.load(open('artifacts/pivot_table.pkl', 'rb'))
-    similarity_scores = pickle.load(open('artifacts/similarity_scores.pkl', 'rb'))
-
-    book_names = pivot_table.index
-    book_name="Harry Potter and the Sorcerer's Stone (Book 1)"
-    res = (
-    recommend_book(books_df=books_df, 
-                   book_name=book_name, 
-                   pivot_table=pivot_table, 
-                   similarity_scores=similarity_scores,
-                   recommend_books_no=5
-                  )
-    )
-    print(f"book_name: {book_name}")
-    print(f"recommended_books: ")
-    for index, book_list in enumerate(res):
-        print(f"{index + 1}) {book_list[1]}")
-
-
-
-if __name__ == "__main__":
-    main()
