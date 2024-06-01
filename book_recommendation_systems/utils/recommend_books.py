@@ -43,7 +43,7 @@ def get_books_recommendations_1_book_rs(books_df, book_name, pivot_table, simila
                       'book_isbn': 'isbn',
                       'book_title': 'title',
                       'book_author': 'author',
-                      'book_image': 'image-url-l'
+                      'book_image': 'image_url'
                    }):
     """
     Recommends books similar to the given book based on similarity scores.

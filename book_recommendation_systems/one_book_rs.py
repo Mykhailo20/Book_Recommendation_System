@@ -8,7 +8,7 @@ from utils.recommend_books import get_books_recommendations_1_book_rs
 
 def recommend_books(book_name):
     # Read the necessary data
-    books_df = pd.read_csv('../data/processed_data/Books.csv')
+    books_df = pd.read_csv('../data/db_data/Books.csv')
     pivot_table = pickle.load(open('../artifacts/pivot_table.pkl', 'rb'))
     similarity_scores = pickle.load(open('../artifacts/similarity_scores.pkl', 'rb'))
 
@@ -31,4 +31,4 @@ def recommend_books(book_name):
     
 
 if __name__ == "__main__":
-    recommend_books(book_name="The Mists of Avalon")
+    recommend_books(book_name="1984")
