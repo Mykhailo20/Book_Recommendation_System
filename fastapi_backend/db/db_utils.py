@@ -1,9 +1,20 @@
 import re
 from sqlalchemy.exc import IntegrityError
+from passlib.context import CryptContext
 
 from routers.schemas import UserBase
 from config.data_config import DB_INTEGRITY_ERROR_PATTERNS
 
+
+pwd_cxt = CryptContext(schemes=['bcrypt'], deprecated='auto')
+
+
+class Hash():
+    def bcrypt(password: str):
+        return pwd_cxt.hash(password)
+    
+    def verify(hashed_password, plain_password):
+        return pwd_cxt.verify(plain_password, hashed_password)
 
 
 def get_db_error_details(request: UserBase, error: IntegrityError):

@@ -3,7 +3,7 @@ from sqlalchemy.orm.session import Session
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 
 from db.models import DbUser
-from db.db_utils import get_db_error_details
+from db.db_utils import get_db_error_details, Hash
 from routers.schemas import UserBase
 
 
@@ -12,7 +12,7 @@ def create_user(db: Session, request: UserBase):
         user = DbUser(
             username=request.username,
             email=request.email,
-            password=request.password
+            password=Hash.bcrypt(request.password)
         )
         db.add(user)
         db.commit()
@@ -40,6 +40,10 @@ def create_user(db: Session, request: UserBase):
             detail=f"An unexpected error occurred: {str(e)}"
         )
     
+
+def get_all_users(db: Session):
+    return db.query(DbUser).all()
+
 
 def get_user_by_username(db: Session, username: str):
     user = db.query(DbUser).filter(DbUser.username == username).first()
