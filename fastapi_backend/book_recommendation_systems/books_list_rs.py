@@ -3,14 +3,23 @@ import pandas as pd
 from book_recommendation_systems.utils.recommend_books import get_books_recommendations_books_list_rs
 
 
-def recommend_books(books_user_like_dict):
+def recommend_books(books_df, ratings_df, books_user_like_dict, user_id, recommend_books_no):
+    books_user_like_df = pd.DataFrame.from_dict(books_user_like_dict)
+    print(f"books_user_like_df = {books_user_like_df}")
+    recommended_books = get_books_recommendations_books_list_rs(ratings_df, books_df, books_user_like_df, user_id, recommend_books_no)
+    print(f"recommended_books = \n{recommended_books}")
+    return recommended_books
+
+
+def recommend_books_test(books_user_like_dict, user_id):
 
     # Read the necessary data
     books_df = pd.read_csv('../data/processed_data/Books.csv')
     ratings_df = pd.read_csv('../data/processed_data/Ratings.csv')
     books_user_like_df = pd.DataFrame.from_dict(books_user_like_dict)
 
-    recommended_books = get_books_recommendations_books_list_rs(ratings_df, books_df, books_user_like_df)
+    recommended_books = get_books_recommendations_books_list_rs(ratings_df, books_df, books_user_like_df, user_id)
+    print(f"type(recommended_books) = {type(recommended_books)}")
     print(f"recommended_books = \n{recommended_books}")
 
 
@@ -36,4 +45,4 @@ if __name__ == "__main__":
         'rating': [10, 9, 10]
     }
 
-    recommend_books(books_user_like_dict)
+    recommend_books_test(books_user_like_dict, current_user_id)

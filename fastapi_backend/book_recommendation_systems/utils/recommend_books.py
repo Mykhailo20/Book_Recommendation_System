@@ -50,17 +50,25 @@ MIN_BOOKS_NO_TO_USE_OVERLAP_COEFF = 2   # The minimum number of books read and r
 SIMILAR_USERS_NO = 15   # The number of similar users whose book preferences will be used to recommend books to the current_user
 MIN_BOOK_RATINGS_NO_CFB = 3   # The minimum number of ratings for a single book to be used to build a Collaborative Filtering Based Recommender System
 BOOKS_NO_TO_RECOMMEND = 10   # The number of books that will be recommended to the user based on his/her book list
+MIN_BOOKS_NO_GOOD_RESULTS = 3    # The minimum number of books the user likes for which good results are obtained
 
 
-def get_books_recommendations_1_book_rs(books_df, book_name, pivot_table, similarity_scores, recommend_books_no=5,
-                   books_df_cols={
-                      'book_isbn': 'isbn',
-                      'book_title': 'title',
-                      'book_author': 'author',
-                      'book_publication_year': 'publication_year',
-                      'book_publisher': 'publisher',
-                      'book_image': 'image_url'
-                   }):
+def get_books_recommendations_1_book_rs(
+        books_df, 
+        book_name, 
+        pivot_table, 
+        similarity_scores, 
+        recommend_books_no=5,
+        get_similar=True,
+        books_df_cols={
+            'book_isbn': 'isbn',
+            'book_title': 'title',
+            'book_author': 'author',
+            'book_publication_year': 'publication_year',
+            'book_publisher': 'publisher',
+            'book_image': 'image_url'
+        }
+    ):
     """
     Recommends books similar to the given book based on similarity scores.
 
@@ -70,6 +78,7 @@ def get_books_recommendations_1_book_rs(books_df, book_name, pivot_table, simila
         pivot_table (pd.DataFrame or scipy.sparse.csr_matrix): The pivot table containing book-user interactions.
         similarity_scores (np.ndarray): The matrix of cosine similarity scores.
         recommend_books_no (int, optional): The number of similar books to recommend. Default is 5.
+        get_similar (bool, optional): Whether to get books similar (True) or dissimilar (False) to the given book. Default is True.
         books_df_cols (dict, optional): A dictionary mapping the standard column names to the DataFrame column names.
             - 'book_isbn' (str): Column name for the book's ISBN.
             - 'book_title' (str): Column name for the book's title.
@@ -87,7 +96,7 @@ def get_books_recommendations_1_book_rs(books_df, book_name, pivot_table, simila
         raise ValueError(f"Book '{book_name}' not found in the dataset.")
         
     index = np.where(pivot_table.index == book_name)[0][0]
-    similar_items = sorted(list(enumerate(similarity_scores[index])), key=lambda x: x[1], reverse=True)[1:(recommend_books_no + 1)]
+    similar_items = sorted(list(enumerate(similarity_scores[index])), key=lambda x: x[1], reverse=get_similar)[1:(recommend_books_no + 1)]
     
     data = []
     for i in similar_items:
@@ -129,7 +138,7 @@ def get_similar_readers(ratings_df, books_user_like_isbn_set, min_books_no_overl
 
     filtered_overlap_user_ids_set = None
     if len(books_user_like_isbn_set) <= min_books_no_overlap_coeff: 
-        books_thresh = len(books_user_like_isbn_set)
+        books_thresh = 1
         filtered_overlap_user_ids_set = set(overlap_users_series[overlap_users_series['ratings_no'] >= books_thresh]['user_id'].values)
     else:
         books_thresh = int(len(books_user_like_isbn_set) * min_users_overlap_coeff)
@@ -160,6 +169,8 @@ def get_similar_book_ratings(ratings_df, books_user_like_df, filtered_overlap_us
 
 def get_cosine_similar_readers(current_user_index, ratings_matrix, interactions_df, similar_users_no):
     similarity = cosine_similarity(ratings_matrix[current_user_index, :], ratings_matrix).flatten()
+    # Prevent the 'out of index' error
+    similar_users_no = len(similarity) if len(similarity) < similar_users_no else similar_users_no
     similar_user_indices = np.argpartition(similarity, -(similar_users_no + 1))[-(similar_users_no + 1):]
     similar_user_indices = np.delete(similar_user_indices, np.where(similar_user_indices == 0))
     similar_users = interactions_df[interactions_df['user_index'].isin(similar_user_indices)].copy()
@@ -176,7 +187,7 @@ def get_title_filtered_books(book_recs_df, books_user_like_df):
     book_recs_df = book_recs_df[~book_recs_df['mod_title'].isin(books_user_like_df['mod_title'])]
     return book_recs_df
 
-def get_books_recommendations_books_list_rs(ratings_df, books_df, books_user_like_df):
+def get_books_recommendations_books_list_rs(ratings_df, books_df, books_user_like_df, current_user_id, recommend_books_no=BOOKS_NO_TO_RECOMMEND):
     books_user_like_isbn_set = set(books_user_like_df['isbn'])   # Because theoretically, a user could give several ratings to a book with the same isbn
 
     # Find users with similar book preferences as the current user
@@ -191,8 +202,12 @@ def get_books_recommendations_books_list_rs(ratings_df, books_df, books_user_lik
     interactions_df, ratings_matrix = get_similar_book_ratings(ratings_df, books_user_like_df, filtered_overlap_user_ids_set)
 
     # Find users similar to current_user
-    current_user_index = interactions_df[interactions_df['user_id'] == -1]['user_index'].unique()[0]    # Get user_index for the current_user
-    similar_users = get_cosine_similar_readers(current_user_index, ratings_matrix, interactions_df, similar_users_no=SIMILAR_USERS_NO)
+    current_user_index = interactions_df[interactions_df['user_id'] == current_user_id]['user_index'].unique()[0]    # Get user_index for the current_user
+    similar_users = get_cosine_similar_readers(
+        current_user_index, ratings_matrix, 
+        interactions_df, 
+        similar_users_no = SIMILAR_USERS_NO if len(books_user_like_isbn_set) >= MIN_BOOKS_NO_GOOD_RESULTS else SIMILAR_USERS_NO * 2
+    )
 
     # Create book recommendations using the 'book_score' variable
     book_recs_df = (
@@ -209,12 +224,15 @@ def get_books_recommendations_books_list_rs(ratings_df, books_df, books_user_lik
 
     # merge book_recs_df and books_df to get all the information about recommended books
     book_recs_df = book_recs_df.merge(books_df, how='inner', on='isbn')
-    book_recs_df = book_recs_df[book_recs_df['ratings_no'] >= MIN_BOOK_RATINGS_NO_CFB]
+    if len(books_user_like_isbn_set) >= MIN_BOOK_RATINGS_NO_CFB:
+        book_recs_df = book_recs_df[book_recs_df['ratings_no'] >= MIN_BOOK_RATINGS_NO_CFB]
     book_recs_df = calc_book_score_df(ratings_df, book_recs_df)
 
     # Filter the results and recommend books
     book_recs_df = book_recs_df[~book_recs_df['isbn'].isin(books_user_like_df['isbn'])]
     book_recs_df = get_title_filtered_books(book_recs_df, books_user_like_df)
-    top_books_recs_df = book_recs_df.drop_duplicates('title').sort_values(by='book_score', ascending=False)
-    return top_books_recs_df.head(BOOKS_NO_TO_RECOMMEND)
+
+    top_books_recs_df = book_recs_df.drop_duplicates('title').sort_values(by=['book_score', 'total_ratings_no'], ascending=[False, False])
+
+    return top_books_recs_df.head(recommend_books_no)
     

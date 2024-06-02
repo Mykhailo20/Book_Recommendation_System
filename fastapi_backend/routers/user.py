@@ -1,9 +1,10 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm.session import Session
 
 from db.database import get_db
 from db import db_user
 from routers.schemas import UserBase, UserDisplay, BookDisplay
+from config.data_config import BOOKS_LIST_RS_RECOMMEND_BOOKS_NO
 
 router = APIRouter(prefix='/user', tags=['user'])
 
@@ -26,3 +27,12 @@ def get_user_by_username(username: str, db: Session = Depends(get_db)):
 @router.get("/{user_id}/rated_books", response_model=list[BookDisplay], tags=['user', 'rating'])
 def get_user_rated_books(user_id: int, db: Session=Depends(get_db)):
     return db_user.get_user_rated_books(db, user_id)
+
+
+@router.get("/{user_id}/recommendations", tags=['user', 'book'])
+def get_user_recommendations(
+    user_id: int, 
+    db: Session=Depends(get_db),
+    books_no: int | None = Query(default=BOOKS_LIST_RS_RECOMMEND_BOOKS_NO, ge=1, lt=50)
+):
+    return db_user.get_user_recommendations(db, user_id, books_no)
