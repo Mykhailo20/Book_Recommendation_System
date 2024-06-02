@@ -2,7 +2,7 @@ from fastapi import HTTPException, status
 from sqlalchemy.orm.session import Session
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 
-from db.models import DbUser
+from db.models import DbUser, DbBook, DbRating
 from db.db_utils import get_db_error_details, Hash
 from routers.schemas import UserBase
 
@@ -37,12 +37,21 @@ def create_user(db: Session, request: UserBase):
         db.rollback()
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, 
-            detail=f"An unexpected error occurred: {str(e)}"
+            detail=f"An unexpected error occurred while creating the user: {str(e)}"
         )
     
 
 def get_all_users(db: Session):
     return db.query(DbUser).all()
+
+
+def check_user(db: Session, user_id: int):
+    user = db.query(DbUser).filter(DbUser.user_id == user_id).first()
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"User with id '{user_id}' not found."
+        )
 
 
 def get_user_by_username(db: Session, username: str):
@@ -53,3 +62,9 @@ def get_user_by_username(db: Session, username: str):
             detail=f"User with username '{username}' not found."
         )
     return user
+
+
+def get_user_rated_books(db: Session, user_id: int):
+    check_user(db, user_id)
+    books = db.query(DbBook).join(DbRating, DbBook.isbn == DbRating.isbn).filter(DbRating.user_id == user_id).all()
+    return books

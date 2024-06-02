@@ -3,7 +3,7 @@ from sqlalchemy.orm.session import Session
 
 from db.database import get_db
 from db import db_book
-from routers.schemas import BookDisplay
+from routers.schemas import BookDisplay, RatingDisplay
 from config.data_config import data, ONE_BOOK_RS_RECOMMEND_BOOKS_NO
 from book_recommendation_systems import popularity_rs, one_book_rs
 from utils.data_converters import book_converter
@@ -69,4 +69,12 @@ def get_book_by_isbn(
     db: Session = Depends(get_db)
 ):
     return db_book.get_book_by_isbn(db, isbn)
+
+
+@router.get('/{isbn}/ratings', response_model=list[RatingDisplay], tags=['book', 'rating'])
+def get_book_ratings(
+    isbn: str = Path(..., title='The isbn of the book ratings of which to get', min_length=10, max_length=10),
+    db: Session = Depends(get_db)
+):
+    return db_book.get_book_ratings(db, isbn)
 
