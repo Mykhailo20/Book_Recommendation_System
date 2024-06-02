@@ -170,7 +170,7 @@ def get_similar_book_ratings(ratings_df, books_user_like_df, filtered_overlap_us
 def get_cosine_similar_readers(current_user_index, ratings_matrix, interactions_df, similar_users_no):
     similarity = cosine_similarity(ratings_matrix[current_user_index, :], ratings_matrix).flatten()
     # Prevent the 'out of index' error
-    similar_users_no = len(similarity) if len(similarity) < similar_users_no else similar_users_no
+    similar_users_no = (len(similarity) - 1) if len(similarity) < similar_users_no else similar_users_no
     similar_user_indices = np.argpartition(similarity, -(similar_users_no + 1))[-(similar_users_no + 1):]
     similar_user_indices = np.delete(similar_user_indices, np.where(similar_user_indices == 0))
     similar_users = interactions_df[interactions_df['user_index'].isin(similar_user_indices)].copy()

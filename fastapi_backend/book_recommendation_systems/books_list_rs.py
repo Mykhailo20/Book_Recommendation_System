@@ -5,9 +5,7 @@ from book_recommendation_systems.utils.recommend_books import get_books_recommen
 
 def recommend_books(books_df, ratings_df, books_user_like_dict, user_id, recommend_books_no):
     books_user_like_df = pd.DataFrame.from_dict(books_user_like_dict)
-    print(f"books_user_like_df = {books_user_like_df}")
     recommended_books = get_books_recommendations_books_list_rs(ratings_df, books_df, books_user_like_df, user_id, recommend_books_no)
-    print(f"recommended_books = \n{recommended_books}")
     return recommended_books
 
 
