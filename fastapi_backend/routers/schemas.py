@@ -65,3 +65,9 @@ class RatingDisplay(BaseModel):
     book: Book
     class Config():
         orm_mode = True
+
+
+class UserAuth(BaseModel):
+    id: int
+    username: str
+    email: str

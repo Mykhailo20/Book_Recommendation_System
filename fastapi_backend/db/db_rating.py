@@ -6,7 +6,12 @@ from db.models import DbRating, DbBook
 from routers.schemas import RatingBase
 
 
-def create_rating(db: Session, request: RatingBase):
+def create_rating(db: Session, request: RatingBase, current_user_id: int):
+    if current_user_id != request.user_id:
+            raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="A user cannot rate books on behalf of another user."
+        )
     try:
         rating = DbRating(
             isbn = request.isbn,

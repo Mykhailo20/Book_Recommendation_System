@@ -70,11 +70,18 @@ def get_user_by_username(db: Session, username: str):
 
 def get_user_rated_books(db: Session, user_id: int):
     check_user(db, user_id)
+    
+
     books = db.query(DbBook).join(DbRating, DbBook.isbn == DbRating.isbn).filter(DbRating.user_id == user_id).all()
     return books
 
 
-def get_user_recommendations(db: Session, user_id: int, books_no: int):
+def get_user_recommendations(db: Session, user_id: int, books_no: int, current_user_id: int):
+    if current_user_id != user_id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="A user can get recommendations based on their saved books, but access to other users' recommendations is not allowed."
+        )
     books_user_like = get_user_rated_books(db, user_id)
     
     # Get ratings for the books the user likes

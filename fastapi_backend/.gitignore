@@ -168,3 +168,4 @@ docker-compose.override.yml
 # Files added by me
 data/
 db_config.py
+auth_config.py
