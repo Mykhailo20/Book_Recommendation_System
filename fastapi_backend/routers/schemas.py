@@ -14,9 +14,11 @@ class UserDisplay(BaseModel):
 
 
 class BookDisplay(BaseModel):
-    isbn: str
+    # isbn: str
     title: str
     author: str
     publication_year: int
     publisher: str
     image_url: str
+    class Config():
+        orm_mode = True

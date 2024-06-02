@@ -3,6 +3,7 @@ from sqlalchemy.orm.session import Session
 
 from db.database import get_db
 from db import db_book
+from routers.schemas import BookDisplay
 from config.data_config import data, ONE_BOOK_RS_RECOMMEND_BOOKS_NO
 from book_recommendation_systems import popularity_rs, one_book_rs
 from utils.data_converters import book_converter
@@ -12,7 +13,7 @@ from utils import get_error_details
 router = APIRouter(prefix='/book', tags=['book'])
 
 
-@router.get('/most_popular')
+@router.get('/most_popular', response_model=list[BookDisplay])
 def get_most_popular_books():
     
     recommended_books = popularity_rs.recommend_books(books_df=data['books_df'], ratings_df=data['ratings_df'])
@@ -20,12 +21,10 @@ def get_most_popular_books():
     # Apply the conversion function to each row
     book_display_list = recommended_books.apply(lambda row: book_converter.convert_from_row(row), axis=1).tolist()
 
-    return {
-        "data": book_display_list
-    }
+    return book_display_list
 
 
-@router.get("/similar/{title}")
+@router.get("/similar/{title}", response_model=list[BookDisplay])
 def get_similar_books(
     title: str = Path(..., title='The title of the book for which similar books will be returned', max_length=300),
     books_no: int | None = Query(default=ONE_BOOK_RS_RECOMMEND_BOOKS_NO, ge=1, lt=50)
@@ -49,7 +48,22 @@ def get_similar_books(
         )
 
 
-@router.get('/{isbn}')
+@router.get('/search', response_model=list[BookDisplay])
+def search_books(
+    title: str | None = Query(None, title='The title of the book to search for'),
+    author: str | None = Query(None, title='The author of the book to search for'),
+    db: Session = Depends(get_db)
+):
+    books = db_book.search_books(db, title, author)
+    if not books:
+        raise HTTPException(
+            status_code=404,
+            detail="No books found matching the search criteria."
+        )
+    return books
+
+
+@router.get('/{isbn}', response_model=BookDisplay)
 def get_book_by_isbn(
     isbn: str = Path(..., title='The isbn of the book to get', min_length=10, max_length=10),
     db: Session = Depends(get_db)
