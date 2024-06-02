@@ -1,6 +1,6 @@
 import pandas as pd
 
-from utils.recommend_books import get_books_recommendations_books_list_rs
+from book_recommendation_systems.utils.recommend_books import get_books_recommendations_books_list_rs
 
 
 def recommend_books(books_user_like_dict):

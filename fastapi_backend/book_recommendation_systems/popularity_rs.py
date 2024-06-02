@@ -1,6 +1,6 @@
 import pandas as pd
 
-from utils.metrics import calc_weighted_rating
+from book_recommendation_systems.utils.metrics import calc_weighted_rating
 
 MIN_BOOK_RATINGS_NO_PB = 100   # The minimum number of ratings for a single book to be used to build a Popularity Based Recommender System
 DEFAULT_RATING = 5   # The neutral rating of the book
@@ -22,6 +22,9 @@ def recommend_books(books_df: pd.DataFrame, ratings_df: pd.DataFrame, recommend_
             }
         )
     )
+
+    book_rated_df = books_df.merge(book_rated_df, on='title', how='inner').drop_duplicates('title')
+    
     book_rated_df = (
         book_rated_df
         [book_rated_df['ratings_no'] >= MIN_BOOK_RATINGS_NO_PB]

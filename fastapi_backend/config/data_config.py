@@ -1,3 +1,7 @@
+import pickle
+import pandas as pd
+from config.files_config import BOOKS_DATA_FILEPATH, RATINGS_DATA_FILEPATH, PIVOT_TABLE_FILEPATH, SIMILARITY_SCORES_FILEPATH
+
 ONE_BOOK_RS_RECOMMEND_BOOKS_NO = 5
 
 DB_INTEGRITY_ERROR_PATTERNS = {
@@ -13,4 +17,19 @@ DB_INTEGRITY_ERROR_PATTERNS = {
         "pattern": r'relation \"user\" violates check constraint \"user_email_check\"',
         "answer_func": lambda email: f"The email '{email}' is not valid."
     }
+}
+
+RS_INTEGRITY_ERROR_PATTERNS = {
+    "title_not_found": {
+        "pattern": r"Book '(.+?)' not found in the dataset.",
+        "answer_func": lambda title: f"Book with title '{title}' not found."
+    }
+}
+
+
+data = {
+    "books_df": pd.read_csv(BOOKS_DATA_FILEPATH),
+    "ratings_df": pd.read_csv(RATINGS_DATA_FILEPATH),
+    "pivot_table": pickle.load(open(PIVOT_TABLE_FILEPATH, 'rb')),
+    "similarity_scores": pickle.load(open(SIMILARITY_SCORES_FILEPATH, 'rb'))
 }

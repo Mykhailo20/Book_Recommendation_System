@@ -1,7 +1,21 @@
+from dataclasses import dataclass
+
 import numpy as np
 import pandas as pd
 from scipy.sparse import coo_matrix
 from sklearn.metrics.pairwise import cosine_similarity
+
+from book_recommendation_systems.exceptions import DataIntegrityError
+
+@dataclass
+class Book:
+    isbn: str
+    title: str
+    author: str
+    publication_year: str
+    publisher: str
+    image_url: str
+
 
 # from metrics import calc_book_score_df
 def calc_book_score_df(ratings_df, 
@@ -43,6 +57,8 @@ def get_books_recommendations_1_book_rs(books_df, book_name, pivot_table, simila
                       'book_isbn': 'isbn',
                       'book_title': 'title',
                       'book_author': 'author',
+                      'book_publication_year': 'publication_year',
+                      'book_publisher': 'publisher',
                       'book_image': 'image_url'
                    }):
     """
@@ -64,7 +80,7 @@ def get_books_recommendations_1_book_rs(books_df, book_name, pivot_table, simila
         ValueError: If the specified book is not found in the pivot table.
     
     Returns:
-        list: A list of lists, each containing the details of a recommended book (ISBN, title, author, image URL).
+        list: A list of books.
     """
     
     if book_name not in pivot_table.index:
@@ -75,16 +91,20 @@ def get_books_recommendations_1_book_rs(books_df, book_name, pivot_table, simila
     
     data = []
     for i in similar_items:
-        item = []
+        
         temp_df = books_df[books_df['title'] == pivot_table.index[i[0]]]
         temp_df = temp_df.drop_duplicates(books_df_cols['book_title'])
-        
-        item.extend(list(temp_df[books_df_cols['book_isbn']].values))
-        item.extend(list(temp_df[books_df_cols['book_title']].values))
-        item.extend(list(temp_df[books_df_cols['book_author']].values))
-        item.extend(list(temp_df[books_df_cols['book_image']].values))
-        
-        data.append(item)
+        if len(temp_df) > 1:
+            raise DataIntegrityError(f"Data integrity error (One book Recommender System): Multiple entries found for title '{pivot_table.index[i[0]]}' after removing duplicates.")
+        book = Book(
+            isbn=temp_df[books_df_cols['book_isbn']].values[0],
+            title=temp_df[books_df_cols['book_title']].values[0],
+            author=temp_df[books_df_cols['book_author']].values[0],
+            publication_year=int(temp_df[books_df_cols['book_publication_year']].values[0]),
+            publisher=temp_df[books_df_cols['book_publisher']].values[0],
+            image_url=temp_df[books_df_cols['book_image']].values[0]
+        )        
+        data.append(book)
     
     return data
 
