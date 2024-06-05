@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { RiCloseLine } from 'react-icons/ri';
+import { HiOutlineMenu } from 'react-icons/hi';
 
 import { logo } from '../assets';
 import { links } from '../assets';
@@ -28,15 +29,42 @@ const Sidebar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
-    <div className='md:flex hidden flex-col w-[220px] py-10 px-4 
-                    bg-[#191624]
-    '>
-      <div className='flex flex-col justify-center'>
-        <img src={logo} alt="logo" className='w-full h-14 object-contain fill-white'/>
-        <h3 className='text-center text-white font-bold'>Books System</h3>
+    <>
+      <div className='md:flex hidden flex-col w-[220px] py-10 px-4 
+                      bg-[#191624]
+      '>
+        <div className='flex flex-col justify-center'>
+          <img src={logo} alt="logo" className='w-full h-14 object-contain fill-white'/>
+          <h3 className='text-center text-white font-bold'>Books System</h3>
+        </div>
+        <NavLinks />
       </div>
-      <NavLinks />
-    </div>
+
+      {/* Mobile menu */}
+      <div className='absolute md:hidden block top-6 right-3'>
+        { mobileMenuOpen? (
+          <RiCloseLine className="w-6 h-6 text-white mr-2 cursor-pointer"
+            onClick={() => setMobileMenuOpen(false)}
+          />
+        ):(
+          <HiOutlineMenu className="w-6 h-6 text-white mr-2 cursor-pointer"
+            onClick={() => setMobileMenuOpen(true)}
+          />
+        ) }
+      </div>
+      <div className={`absolute top-0 h-screen w-2/3
+                       bg-gradient-to-tl from-white/10 t0-[#483d8b]
+                       backdrop-blur-lg z-10 p-6 md:hidden
+                       smooth-transition
+                       ${mobileMenuOpen? 'left-0': '-left-full'}
+      `}>
+        <div className='flex flex-col justify-center'>
+          <img src={logo} alt="logo" className='w-full h-14 object-contain fill-white'/>
+          <h3 className='text-center text-white font-bold'>Books System</h3>
+        </div>
+        <NavLinks handleClick={() => setMobileMenuOpen(false)}/>
+      </div>
+    </>
   )
 };
 
