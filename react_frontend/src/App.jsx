@@ -15,7 +15,7 @@ const App = () => {
           <div className="flex-1 h-fit pb-40">
             <Routes>
               <Route path="/" element={< Home />} />
-              <Route path="/books/:book_isbn" element={< BookDetails />} />
+              <Route path="/books/:bookIsbn" element={< BookDetails />} />
               <Route path="/search/:searchTerm" element={< Search />} />
             </Routes>
           </div>
