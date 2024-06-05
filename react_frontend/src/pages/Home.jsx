@@ -1,12 +1,15 @@
 import { useEffect, useState } from 'react';
 
 import { Error, BookCard } from '../components';
+import { useGetMostPopularBooksQuery } from '../redux/services/fastapiBackendCore';
 
 const BASE_URL = 'http://localhost:8000/'
 
 const Home = () => {
 
-    const [mostPopularBooks, setMostPopularBooks] = useState([]);
+  const {data, isFetching, error } = useGetMostPopularBooksQuery();
+  console.log(data);
+    /*const [mostPopularBooks, setMostPopularBooks] = useState([]);
     useEffect(() => {
         
         fetch(BASE_URL + 'book/most_popular')
@@ -24,7 +27,7 @@ const Home = () => {
           .catch(error => {
             console.log(error)
           })
-      }, []);
+      }, []);*/
 
     return (
         <div className='flex flex-col'>
