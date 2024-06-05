@@ -3,6 +3,7 @@ import Searchbar from './Searchbar';
 import BookCard from './BookCard';
 
 import DetailsHeader from './DetailsHeader';
+import Loader from './Loader';
 import Error from './Error';
 
 export {
@@ -10,5 +11,6 @@ export {
   BookCard,
   Searchbar,
   DetailsHeader,
+  Loader,
   Error
 };
