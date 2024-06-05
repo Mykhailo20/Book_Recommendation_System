@@ -1,8 +1,14 @@
-import { HiOutlineHashtag, HiOutlineHome, HiOutlinePhotograph, HiOutlineUserGroup } from 'react-icons/hi';
+import { GoHome, GoSearch } from "react-icons/go";
+import { MdLocalLibrary, MdRecommend } from "react-icons/md";
+import { SiBookstack } from "react-icons/si";
+
 
 export const links = [
-  { name: 'Discover', to: '/', icon: HiOutlineHome },
-  { name: 'Around You', to: '/around-you', icon: HiOutlinePhotograph },
-  { name: 'Top Artists', to: '/top-artists', icon: HiOutlineUserGroup },
-  { name: 'Top Charts', to: '/top-charts', icon: HiOutlineHashtag },
+  { name: 'Home', to: '/', icon: GoHome },
+  { name: 'Search', to: '/search', icon: GoSearch },
+  { name: 'Your Library', to: '/rated-books', icon: MdLocalLibrary },
+  { name: 'Recommendations', to: '/book-recommendations', icon: SiBookstack},
 ];
+
+
+export default links;
