@@ -1,9 +1,5 @@
-import { useEffect, useState } from 'react';
-
 import { Error, BookCard, Loader } from '../components';
 import { useGetMostPopularBooksQuery } from '../redux/services/fastapiBackendCore';
-
-const BASE_URL = 'http://localhost:8000/'
 
 const Home = () => {
 

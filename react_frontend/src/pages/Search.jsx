@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { Searchbar, Error, BookCard, Loader } from '../components';
+import { Error, BookCard, Loader } from '../components';
 import { defaultAuthors } from '../assets/constants';
 import { useGetAuthorsWithMostBooksQuery, useGetBooksByAuthorQuery } from '../redux/services/fastapiBackendCore';
 
@@ -58,7 +58,6 @@ const Search = () => {
 
   return (
     <div>
-      <Searchbar />
       <div className='w-full flex justify-between items-center
                       sm:flex-row flex-col mt-4 mb-10
       '>

@@ -13,7 +13,8 @@ export const fastapiBackendCoreApi = createApi({
         getBookDetails: builder.query({ query: ({ bookIsbn }) => `/book/${bookIsbn}` }),
         getSimilarBooks: builder.query({ query: ({ bookIsbn }) => `/book/similar/${bookIsbn}` }),
         getAuthorsWithMostBooks: builder.query({ query: (booksNo=50) => `/book/authors_most_books?books_no=${booksNo}` }),
-        getBooksByAuthor: builder.query({ query: ({ booksAuthor }) => `/book/search?author=${booksAuthor}`})
+        getBooksByAuthor: builder.query({ query: ({ booksAuthor }) => `/book/search?author=${booksAuthor}`}),
+        getBooksByTitle: builder.query({ query: ({ bookTitle }) => `/book/search?title=${bookTitle}` })
     }),
 });
 
@@ -22,5 +23,6 @@ export const {
     useGetBookDetailsQuery,
     useGetSimilarBooksQuery,
     useGetAuthorsWithMostBooksQuery,
-    useGetBooksByAuthorQuery
+    useGetBooksByAuthorQuery,
+    useGetBooksByTitleQuery
 } = fastapiBackendCoreApi;

@@ -16,10 +16,6 @@ def recommend_books(books_df, pivot_table, similarity_scores, book_name, recomme
                                             recommend_books_no=recommend_books_no
         )
     )
-    print(f"book_name: {book_name}")
-    print(f"recommended_books: ")
-    for index, book in enumerate(res):
-        print(f"{index + 1}) {book.title}")
     return res
 
     
