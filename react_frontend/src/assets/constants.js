@@ -3,16 +3,16 @@ import { MdLocalLibrary, MdRecommend } from "react-icons/md";
 import { SiBookstack } from "react-icons/si";
 
 export const defaultAuthors = [
-  { displayValue: 'Joanne Rowling', backendValue: 'J. K. Rowling' },
-  { displayValue: 'Antoine de Saint-Exupéry', backendValue: 'Antoine de Saint-ExupÃ©ry' },
-  { displayValue: 'Orson Card', backendValue: 'Orson Scott Card' },
-  { displayValue: 'Stephen Chbosky', backendValue: 'Stephen Chbosky' },
-  { displayValue: 'John Tolkien', backendValue: 'J.R.R. TOLKIEN' },
-  { displayValue: 'Lois Lowry', backendValue: 'LOIS LOWRY' },
-  { displayValue: 'Daniel Quinn', backendValue: 'Daniel Quinn' },
-  { displayValue: 'Jhumpa Lahiri', backendValue: 'Jhumpa Lahiri' },
-  { displayValue: 'Anne Frank', backendValue: 'ANNE FRANK' },
-  { displayValue: 'Elwyn White', backendValue: 'E. B. White' }
+  { frontendValue: 'Joanne Rowling', backendValue: 'J. K. Rowling' },
+  { frontendValue: 'Antoine de Saint-Exupéry', backendValue: 'Antoine de Saint-ExupÃ©ry' },
+  { frontendValue: 'Orson Card', backendValue: 'Orson Scott Card' },
+  { frontendValue: 'Stephen Chbosky', backendValue: 'Stephen Chbosky' },
+  { frontendValue: 'John Tolkien', backendValue: 'J.R.R. TOLKIEN' },
+  { frontendValue: 'Lois Lowry', backendValue: 'LOIS LOWRY' },
+  { frontendValue: 'Daniel Quinn', backendValue: 'Daniel Quinn' },
+  { frontendValue: 'Jhumpa Lahiri', backendValue: 'Jhumpa Lahiri' },
+  { frontendValue: 'Anne Frank', backendValue: 'ANNE FRANK' },
+  { frontendValue: 'Elwyn White', backendValue: 'E. B. White' }
 ];
 
 export const links = [
