@@ -56,20 +56,21 @@ def get_most_popular_books(db: Session):
     return book_display_list
 
 
-def get_similar_books(db: Session, title: str, books_no: int):
+def get_similar_books(db: Session, isbn: str, books_no: int):
+    book = get_book_by_isbn(db, isbn)
     try:
         similar_books = one_book_rs.get_books_recommendations_1_book_rs(
             books_df=data['books_df'], 
             pivot_table=data['pivot_table'], 
             similarity_scores=data['similarity_scores'], 
-            book_name=title,
+            book_name=book.title,
             recommend_books_no=books_no
         )
 
         return similar_books
     
     except ValueError as e:
-        detail = get_error_details.get_rs_error_details(request_value=title, error=e)
+        detail = get_error_details.get_rs_error_details(request_value=book.title, error=e)
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=detail

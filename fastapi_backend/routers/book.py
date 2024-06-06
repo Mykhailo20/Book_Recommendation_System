@@ -16,13 +16,13 @@ def get_most_popular_books(db: Session = Depends(get_db)):
     return db_book.get_most_popular_books(db)
 
 
-@router.get("/similar/{title}", response_model=list[BookDisplay])
+@router.get("/similar/{isbn}", response_model=list[BookDisplay])
 def get_similar_books(
-    title: str = Path(..., title='The title of the book for which similar books will be returned', max_length=300),
+    isbn: str = Path(..., isbn='The isbn of the book for which similar books will be returned', min_length=10, max_length=10),
     books_no: int | None = Query(default=ONE_BOOK_RS_RECOMMEND_BOOKS_NO, ge=1, lt=50),
     db: Session = Depends(get_db)
 ):
-    return db_book.get_similar_books(db, title, books_no)
+    return db_book.get_similar_books(db, isbn, books_no)
 
 
 @router.get('/search', response_model=list[BookDisplay])
