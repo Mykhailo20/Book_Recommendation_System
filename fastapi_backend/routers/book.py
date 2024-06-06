@@ -4,7 +4,7 @@ from sqlalchemy.orm.session import Session
 from db.database import get_db
 from db import db_book
 from routers.schemas import BookDisplay, RatingDisplay
-from config.data_config import ONE_BOOK_RS_RECOMMEND_BOOKS_NO
+from config.data_config import ONE_BOOK_RS_RECOMMEND_BOOKS_NO, POPULARITY_RS_RECOMMEND_BOOKS_NO
 
 
 
@@ -12,8 +12,11 @@ router = APIRouter(prefix='/book', tags=['book'])
 
 
 @router.get('/most_popular', response_model=list[BookDisplay])
-def get_most_popular_books(db: Session = Depends(get_db)):
-    return db_book.get_most_popular_books(db)
+def get_most_popular_books(
+    db: Session = Depends(get_db), 
+    books_no: int | None = Query(default=POPULARITY_RS_RECOMMEND_BOOKS_NO, ge=1)
+):
+    return db_book.get_most_popular_books(db, books_no)
 
 
 @router.get("/similar/{isbn}", response_model=list[BookDisplay])

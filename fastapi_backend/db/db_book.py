@@ -49,8 +49,8 @@ def get_book_ratings(db: Session, book_isbn: str):
     return ratings
 
 
-def get_most_popular_books(db: Session):
-    recommended_books = popularity_rs.recommend_books(books_df=data['books_df'], ratings_df=data['ratings_df'])
+def get_most_popular_books(db: Session, books_no: int):
+    recommended_books = popularity_rs.recommend_books(books_df=data['books_df'], ratings_df=data['ratings_df'], recommend_books_no=books_no)
     # Apply the conversion function to each row
     book_display_list = recommended_books.apply(lambda row: book_converter.convert_from_row(row), axis=1).tolist()
     return book_display_list
