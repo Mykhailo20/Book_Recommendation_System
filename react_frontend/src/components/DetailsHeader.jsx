@@ -1,11 +1,11 @@
 const DetailsHeader = ({ bookData }) => (
-  <div className="relative w-full flex flex-col top-5">
+  <div className="relative w-full flex flex-col top-5 mb-10">
     <div className="w-full bg-gradient-to-l from-transparent to-black
       sm:h-56 h-48
     ">
       <div className="absolute inset-0 flex items-start">
         <img src={ bookData?.image_url }
-          className="sm:w-36 w-28 rounded-sm object-cover shadow-xl shadow-black" 
+          className="sm:h-56 h-48 rounded-sm object-cover shadow-xl shadow-black" 
           alt="book-img"
         />
         <div className="ml-5">

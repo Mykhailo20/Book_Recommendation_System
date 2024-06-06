@@ -7,7 +7,7 @@ const BASE_URL = 'http://localhost:8000/'
 
 const Home = () => {
 
-  const {data: mostPopularBooksData, isFetching: mostPopularBooksIsFetching, error: mostPopularBooksError } = useGetMostPopularBooksQuery();
+  const {data: mostPopularBooksData, isFetching: isFetchingMostPopularBooks, error: mostPopularBooksError } = useGetMostPopularBooksQuery();
   
   return (
       <div className='flex flex-col'>
@@ -15,7 +15,7 @@ const Home = () => {
               <div className='w-full flex justify-between items-center sm:flex-row flex-col mt-4 mb-10'>
                   <h2 className='font-bold text-2xl text-white text-left'>Most Popular Books</h2>
               </div>
-              { mostPopularBooksIsFetching && <Loader title="Loading Books..."/> }
+              { isFetchingMostPopularBooks && <Loader title="Loading Books..."/> }
               { mostPopularBooksError && <Error error="An error occurred while retrieving the most popular books."/>}
               {
                 mostPopularBooksData &&

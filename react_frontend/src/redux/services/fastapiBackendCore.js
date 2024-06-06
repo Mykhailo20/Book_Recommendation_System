@@ -10,11 +10,13 @@ export const fastapiBackendCoreApi = createApi({
     }),
     endpoints: (builder) => ({
         getMostPopularBooks: builder.query({ query: () => '/book/most_popular' }),
-        getBookDetails: builder.query({ query: ({ bookIsbn }) => `/book/${bookIsbn}` })
+        getBookDetails: builder.query({ query: ({ bookIsbn }) => `/book/${bookIsbn}` }),
+        getSimilarBooks: builder.query({ query: ({ bookIsbn }) => `/book/similar/${bookIsbn}` })
     }),
 });
 
 export const {
     useGetMostPopularBooksQuery,
     useGetBookDetailsQuery,
+    useGetSimilarBooksQuery,
 } = fastapiBackendCoreApi;

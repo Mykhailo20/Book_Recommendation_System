@@ -11,7 +11,18 @@ const BookCard = ({ book, index }) => {
                          bg-opacity-20 group-hover:flex hidden`}>
         </div>
         <div className='w-100 flex justify-center'>
-          <img alt='book_img' src={book.image_url}/>
+          { book.image_url ? (
+              <img alt='book_img' src={ book.image_url } className='min-h-[10rem]' />
+            ) : (
+              <div
+                style={{
+                  width: '220px',
+                  height: '131.741px',
+                  backgroundColor: 'gray',
+                }}
+              />
+            )}
+          
         </div>
       </div>
       <div className='mt-4 flex flex-col'>
