@@ -18,11 +18,20 @@ const SearchResults = () => {
           <div className='most-popular-books-container'>
               <div className='w-full flex justify-between items-center sm:flex-row flex-col mt-4 mb-10'>
                   <h2 className='font-bold text-2xl text-white text-left'>
-                    Showing results for <span className="font-black">{ bookTitle  }</span>
+                    Showing results for <span className="font-black">{ bookTitle }</span>
                   </h2>
               </div>
               { isFetchingBooksSearch && <Loader title="Loading Books..."/> }
-              { booksSearchError && <Error error="An error occurred while retrieving the most popular books."/>}
+              { booksSearchError && booksSearchError.status === 404 ?
+                    (
+                        <Error error={`No book with the title '${bookTitle}' was found.`} />
+                    ):booksSearchError ?(
+                        <Error error={`An error occurred while retrieving books with the title '${bookTitle}'`}/>  
+                    ):(
+                        <></>
+                    )
+              }
+                
               {
                 booksSearchData &&
                 <div className='flex flex-wrap sm:justify-start justify-center gap-8'>
