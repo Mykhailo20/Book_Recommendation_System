@@ -1,4 +1,5 @@
 from fastapi import HTTPException, status
+from sqlalchemy import func, desc
 from sqlalchemy.orm.session import Session
 
 from db.models import DbBook, DbRating
@@ -9,7 +10,7 @@ from utils.data_converters import book_converter
 from utils import get_error_details
 
 
-def get_book_by_isbn(db: Session, isbn: str):
+def get_book_by_isbn(db: Session, isbn: str) -> DbBook:
     book = db.query(DbBook).filter(DbBook.isbn == isbn).first()
     if not book:
         raise HTTPException(
@@ -19,7 +20,26 @@ def get_book_by_isbn(db: Session, isbn: str):
     return book
 
 
-def search_books(db: Session, title: str|None = None, author: str|None = None):
+async def get_book_authors(db: Session) -> list[str]:
+    authors = db.query(func.lower(DbBook.author)).distinct().all()
+    authors = [author[0] for author in authors]
+
+    return authors
+
+
+async def get_authors_with_most_books(db: Session, authors_no: int) -> list[str]:
+    author_counts = (
+        db.query(DbBook.author, func.count(DbBook.isbn))
+        .group_by(DbBook.author)
+        .order_by(desc(func.count(DbBook.isbn)))
+        .limit(authors_no)
+        .all()
+    )
+    
+    return [author[0] for author in author_counts]
+
+
+def search_books(db: Session, title: str|None = None, author: str|None = None) -> list[DbBook]:
     query = db.query(DbBook)
     if title:
         query = query.filter(DbBook.title.ilike(f"%{title}%"))

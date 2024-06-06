@@ -4,7 +4,7 @@ from sqlalchemy.orm.session import Session
 from db.database import get_db
 from db import db_book
 from routers.schemas import BookDisplay, RatingDisplay
-from config.data_config import ONE_BOOK_RS_RECOMMEND_BOOKS_NO, POPULARITY_RS_RECOMMEND_BOOKS_NO
+from config.data_config import ONE_BOOK_RS_RECOMMEND_BOOKS_NO, POPULARITY_RS_RECOMMEND_BOOKS_NO, AUTHORS_NO
 
 
 
@@ -36,6 +36,18 @@ def search_books(
 ):
     return db_book.search_books(db, title, author)
     
+
+@router.get('/authors')
+async def get_authors(db: Session = Depends(get_db)):
+    return await db_book.get_book_authors(db)
+
+
+@router.get('/authors_most_books')
+async def get_authors_with_most_books(
+    db: Session = Depends(get_db),
+    books_no: int | None = Query(default=AUTHORS_NO, ge=1)
+):
+    return await db_book.get_authors_with_most_books(db, books_no)
 
 
 @router.get('/{isbn}', response_model=BookDisplay)
