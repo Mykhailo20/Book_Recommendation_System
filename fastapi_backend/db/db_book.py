@@ -54,7 +54,7 @@ def search_books(db: Session, title: str|None = None, author: str|None = None) -
     return books
 
 
-def check_book(db: Session, book_isbn: str):
+def check_book(db: Session, book_isbn: str) -> None:
     book = db.query(DbBook).filter(DbBook.isbn == book_isbn).first()
     if not book:
         raise HTTPException(
@@ -63,7 +63,7 @@ def check_book(db: Session, book_isbn: str):
         )
     
     
-def get_book_ratings(db: Session, book_isbn: str):
+def get_book_ratings(db: Session, book_isbn: str) -> list[DbRating]:
     check_book(db, book_isbn)
     ratings = db.query(DbRating).filter(DbRating.isbn == book_isbn).all()
     return ratings
@@ -76,22 +76,37 @@ def get_most_popular_books(db: Session, books_no: int):
     return book_display_list
 
 
-def get_similar_books(db: Session, isbn: str, books_no: int):
-    book = get_book_by_isbn(db, isbn)
+def get_similar_books(db: Session, books_no: int, isbn: str | None = None, title: str | None = None):
+    book_title = title
+    if isbn:
+        book_title = get_book_by_isbn(db, isbn).title
+    
+    if not book_title:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Either isbn or title of the book must be provided."
+        )
+
     try:
         similar_books = one_book_rs.get_books_recommendations_1_book_rs(
             books_df=data['books_df'], 
             pivot_table=data['pivot_table'], 
             similarity_scores=data['similarity_scores'], 
-            book_name=book.title,
+            book_name=book_title,
             recommend_books_no=books_no
         )
 
         return similar_books
     
     except ValueError as e:
-        detail = get_error_details.get_rs_error_details(request_value=book.title, error=e)
+        detail = get_error_details.get_rs_error_details(request_value=book_title, error=e)
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=detail
         )
+    
+
+def get_1_book_rs_all_titles(db: Session) -> list[str]:
+    pivot_table=data['pivot_table']
+    book_titles = pivot_table.index.to_list()
+    return book_titles

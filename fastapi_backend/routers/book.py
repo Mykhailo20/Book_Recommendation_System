@@ -19,13 +19,19 @@ def get_most_popular_books(
     return db_book.get_most_popular_books(db, books_no)
 
 
-@router.get("/similar/{isbn}", response_model=list[BookDisplay])
+@router.get("/similar", response_model=list[BookDisplay])
 def get_similar_books(
-    isbn: str = Path(..., isbn='The isbn of the book for which similar books will be returned', min_length=10, max_length=10),
+    isbn: str | None = Query(None, isbn='The isbn of the book for which similar books will be returned', min_length=10, max_length=10),
+    title: str | None = Query(None, title='The title of the book for which similar books will be returned'),
     books_no: int | None = Query(default=ONE_BOOK_RS_RECOMMEND_BOOKS_NO, ge=1, lt=50),
     db: Session = Depends(get_db)
 ):
-    return db_book.get_similar_books(db, isbn, books_no)
+    return db_book.get_similar_books(db, books_no, isbn, title)
+
+
+@router.get("/similar/all_titles")
+def get_1_book_rs_titles(db: Session = Depends(get_db)):
+    return db_book.get_1_book_rs_all_titles(db)
 
 
 @router.get('/search', response_model=list[BookDisplay])
