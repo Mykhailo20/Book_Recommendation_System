@@ -81,13 +81,13 @@ const Search = () => {
                   )}
               </select>
               <button 
-                  className='bg-transparent text-gray-300 border border-white p-3 rounded-lg self-start hover:bg-black hover:border-black'
+                  className='bg-transparent text-gray-300 border border-white p-2 rounded-lg self-start  hover:text-red-500 hover:border-red-500'
                   onClick={() => {
                     const selectedTitle = document.getElementById("bookTitleSelect").value;
                     setBookTitle(selectedTitle);
                   }}
               >
-                  Show Recommendations
+                  Show Recommendation
               </button>
           </div>
           {

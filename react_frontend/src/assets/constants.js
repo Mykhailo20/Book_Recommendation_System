@@ -31,8 +31,8 @@ export const defaultTitles = [
 export const links = [
   { name: 'Home', to: '/', icon: GoHome },
   { name: 'Search', to: '/search', icon: GoSearch },
-  { name: 'Your Library', to: '/rated-books', icon: MdLocalLibrary },
-  { name: 'Recommendations', to: '/book-recommendations', icon: SiBookstack},
+  /*{ name: 'Your Library', to: '/rated-books', icon: MdLocalLibrary },
+  { name: 'Recommendations', to: '/book-recommendations', icon: SiBookstack},*/
 ];
 
 export default links;
