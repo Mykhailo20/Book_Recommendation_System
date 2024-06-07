@@ -1,9 +1,11 @@
 import { BookCard, Error, Loader } from "../components";
-import { useGetSimilarBooksQuery } from "../redux/services/fastapiBackendCore";
+import { useGetSimilarBooksByIsbnQuery } from "../redux/services/fastapiBackendCore";
 
 const SimilarBooks = ({ bookIsbn }) => {
 
-  const {data: similarBooksData, isFetching: isFetchingSimilarBooksData, error: similarBooksDataError } = useGetSimilarBooksQuery({ bookIsbn })
+  const {data: similarBooksData, isFetching: isFetchingSimilarBooksData, error: similarBooksDataError } 
+  = useGetSimilarBooksByIsbnQuery({ bookIsbn })
+
 
   return (
     <div className='flex flex-col mt-5'>

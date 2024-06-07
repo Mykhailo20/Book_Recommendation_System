@@ -11,7 +11,8 @@ export const fastapiBackendCoreApi = createApi({
     endpoints: (builder) => ({
         getMostPopularBooks: builder.query({ query: () => '/book/most_popular' }),
         getBookDetails: builder.query({ query: ({ bookIsbn }) => `/book/${bookIsbn}` }),
-        getSimilarBooks: builder.query({ query: ({ bookIsbn }) => `/book/similar/${bookIsbn}` }),
+        getSimilarBooksByIsbn: builder.query({ query: ({ bookIsbn }) => `/book/similar?isbn=${bookIsbn}` }),
+        getSimilarBooksAllTitles: builder.query( { query: () => 'book/similar/all_titles' } ),
         getAuthorsWithMostBooks: builder.query({ query: (booksNo=50) => `/book/authors_most_books?books_no=${booksNo}` }),
         getBooksByAuthor: builder.query({ query: ({ booksAuthor }) => `/book/search?author=${booksAuthor}`}),
         getBooksByTitle: builder.query({ query: ({ bookTitle }) => `/book/search?title=${bookTitle}` })
@@ -21,7 +22,8 @@ export const fastapiBackendCoreApi = createApi({
 export const {
     useGetMostPopularBooksQuery,
     useGetBookDetailsQuery,
-    useGetSimilarBooksQuery,
+    useGetSimilarBooksByIsbnQuery,
+    useGetSimilarBooksAllTitlesQuery,
     useGetAuthorsWithMostBooksQuery,
     useGetBooksByAuthorQuery,
     useGetBooksByTitleQuery

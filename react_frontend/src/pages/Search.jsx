@@ -1,8 +1,9 @@
 import { useState } from 'react';
 
-import { Error, BookCard, Loader } from '../components';
+import { Error, BookCard, Loader, SimilarBooksOneBookRS } from '../components';
 import { defaultAuthors } from '../assets/constants';
-import { useGetAuthorsWithMostBooksQuery, useGetBooksByAuthorQuery } from '../redux/services/fastapiBackendCore';
+import { useGetAuthorsWithMostBooksQuery, useGetBooksByAuthorQuery, useGetSimilarBooksAllTitlesQuery } 
+from '../redux/services/fastapiBackendCore';
 
 const processBackendAuthor = (backendValue) => {
   const words = backendValue.split(' ');
@@ -44,7 +45,7 @@ const getUniqueBooksByTitle = (books) => {
 
 const Search = () => {
   const [booksAuthor, setBooksAuthor] = useState(defaultAuthors[0].backendValue);
-  
+
   const {data: authorsData, isFetching: isFetchingAuthorsData, error: authorsDataError } = 
   useGetAuthorsWithMostBooksQuery();
 
@@ -58,6 +59,9 @@ const Search = () => {
 
   return (
     <div>
+      <SimilarBooksOneBookRS />
+      
+      { /* Search books by author */ }
       <div className='w-full flex justify-between items-center
                       sm:flex-row flex-col mt-4 mb-10
       '>

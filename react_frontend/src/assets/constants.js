@@ -15,6 +15,19 @@ export const defaultAuthors = [
   { frontendValue: 'Elwyn White', backendValue: 'E. B. White' }
 ];
 
+export const defaultTitles = [
+  "1984",
+  "2nd Chance",
+  "4 Blondes",
+  "Year of Wonders",
+  "Harry Potter and the Sorcerer's Stone (Book 1)",
+  "Zen and the Art of Motorcycle Maintenance: An Inquiry into Values",
+  "Dragonfly in Amber",
+  "Brave New World",
+  "Anne of the Island",
+  "Where the Red Fern Grows"
+]
+
 export const links = [
   { name: 'Home', to: '/', icon: GoHome },
   { name: 'Search', to: '/search', icon: GoSearch },
