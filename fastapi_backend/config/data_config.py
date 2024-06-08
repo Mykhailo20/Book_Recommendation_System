@@ -1,6 +1,6 @@
 import pickle
 import pandas as pd
-from config.files_config import BOOKS_DATA_FILEPATH, RATINGS_DATA_FILEPATH, PIVOT_TABLE_FILEPATH, SIMILARITY_SCORES_FILEPATH
+from config.files_config import BOOKS_DATA_FILEPATH, RATINGS_DATA_FILEPATH, PIVOT_TABLE_FILEPATH, SIMILARITY_SCORES_FILEPATH, BOOKS_POPULARITY_DATA_FILEPATH
 
 POPULARITY_RS_RECOMMEND_BOOKS_NO = 10
 ONE_BOOK_RS_RECOMMEND_BOOKS_NO = 5
@@ -35,5 +35,6 @@ data = {
     "books_df": pd.read_csv(BOOKS_DATA_FILEPATH),
     "ratings_df": pd.read_csv(RATINGS_DATA_FILEPATH),
     "pivot_table": pickle.load(open(PIVOT_TABLE_FILEPATH, 'rb')),
-    "similarity_scores": pickle.load(open(SIMILARITY_SCORES_FILEPATH, 'rb'))
+    "similarity_scores": pickle.load(open(SIMILARITY_SCORES_FILEPATH, 'rb')),
+    "books_popularity_df": pd.read_csv(BOOKS_POPULARITY_DATA_FILEPATH)
 }
