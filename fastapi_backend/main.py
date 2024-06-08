@@ -3,13 +3,17 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from routers import user, book, rating
 from utils.auth import authentication
+from config.data_config import lifespan
 
-app = FastAPI()
+
+
+app = FastAPI(lifespan=lifespan)
 
 app.include_router(authentication.router)
 app.include_router(user.router)
 app.include_router(book.router)
 app.include_router(rating.router)
+
 
 @app.get("/")
 def index():
