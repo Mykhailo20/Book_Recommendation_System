@@ -15,11 +15,11 @@ const Home = () => {
         {/* Proverb about books */}
         <div className='flex justify-center'>
             <div className="flex items-center justify-center p-6 rounded-lg shadow-md mb-12 w-1/2">
-                <FaBookOpen className="text-yellow-600 w-8 h-8 mr-4" />
-                <p className="font-bold text-2xl text-white text-left">
+                <FaBookOpen className="text-yellow-600 md:w-8 md:h-8 w-20 h-20 mr-4" />
+                <p className="font-bold text-2xl text-white md:text-left text-center">
                     A book holds a house of gold
                 </p>
-                <FaHouseUser className="text-yellow-600 w-8 h-8 ml-4" />
+                <FaHouseUser className="text-yellow-600 md:w-8 md:h-8 w-20 h-20 ml-4" />
             </div>
         </div>
         
