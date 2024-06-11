@@ -1,17 +1,39 @@
-from fastapi import HTTPException, status
+from fastapi import HTTPException, status, Request
 from sqlalchemy import func, desc
 from sqlalchemy.orm.session import Session
 
 from db.models import DbBook, DbRating
 from config.data_config import data
+from config.auth_config import OPEN_LIBRARY_ISBN_BASE_API
 from book_recommendation_systems import popularity_rs, one_book_rs
 
 from utils.data_converters import book_converter
 from utils import get_error_details
 
 
-def get_book_by_isbn(db: Session, isbn: str) -> DbBook:
+async def get_book_by_isbn(request: Request, db: Session, isbn: str) -> DbBook:
     book = db.query(DbBook).filter(DbBook.isbn == isbn).first()
+
+    if book.publication_year == 0:
+        try:
+            open_library_response = await request.app.open_library_http_client.get(f"{OPEN_LIBRARY_ISBN_BASE_API}/{isbn}.json")
+            
+            # Handle the redirect if status code is 302
+            if open_library_response.status_code == status.HTTP_302_FOUND:
+                redirect_url = open_library_response.headers.get('Location')
+                if redirect_url:
+                    open_library_response = await request.app.open_library_http_client.get(redirect_url)
+            
+            # Check the final response status code
+            if open_library_response.status_code == status.HTTP_200_OK:
+                open_library_json = open_library_response.json()
+                print(f"open_library_response.json() = {open_library_json}")
+            else:
+                print(f"Unexpected status code: {open_library_response.status_code}")
+                
+        except Exception as e:
+            print(f"Exception occurred: {e}")
+
     if not book:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,

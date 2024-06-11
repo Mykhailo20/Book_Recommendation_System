@@ -2,6 +2,7 @@ import pickle
 
 import pandas as pd
 from contextlib import asynccontextmanager
+import httpx
 
 from config.files_config import BOOKS_DATA_FILEPATH, RATINGS_DATA_FILEPATH, PIVOT_TABLE_FILEPATH, SIMILARITY_SCORES_FILEPATH, BOOKS_POPULARITY_DATA_FILEPATH
 
@@ -63,8 +64,10 @@ async def lifespan(app):
         similarity_scores_filepath=SIMILARITY_SCORES_FILEPATH,
         books_popularity_data_filepath=BOOKS_POPULARITY_DATA_FILEPATH
     )
+    app.open_library_http_client = httpx.AsyncClient()
 
     yield
 
     # shutdown
     data.clear()
+    await app.open_library_http_client.aclose()

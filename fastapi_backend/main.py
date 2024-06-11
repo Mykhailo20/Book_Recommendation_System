@@ -6,7 +6,6 @@ from utils.auth import authentication
 from config.data_config import lifespan
 
 
-
 app = FastAPI(lifespan=lifespan)
 
 app.include_router(authentication.router)
