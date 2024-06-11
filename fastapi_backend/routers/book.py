@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, Path, Query, Request
+from fastapi import APIRouter, Depends, Path, Query, Request, BackgroundTasks
 from sqlalchemy.orm.session import Session
 
 from db.database import get_db
@@ -59,10 +59,11 @@ async def get_authors_with_most_books(
 @router.get('/{isbn}', response_model=BookDisplay)
 async def get_book_by_isbn(
     request: Request,
+    bt: BackgroundTasks,
     isbn: str = Path(..., title='The isbn of the book to get', min_length=10, max_length=10),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db), 
 ):
-    return await db_book.get_book_by_isbn(request, db, isbn)
+    return await db_book.get_book_by_isbn(db, isbn, request, bt)
 
 
 @router.get('/{isbn}/ratings', response_model=list[RatingDisplay], tags=['book', 'rating'])

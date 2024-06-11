@@ -1,4 +1,4 @@
-from fastapi import HTTPException, status, Request
+from fastapi import HTTPException, status, Request, BackgroundTasks
 from sqlalchemy import func, desc
 from sqlalchemy.orm.session import Session
 
@@ -12,7 +12,7 @@ from config.data_config import data
 from config.auth_config import OPEN_LIBRARY_ISBN_BASE_API
 
 
-async def get_book_by_isbn(request: Request, db: Session, isbn: str) -> DbBook:
+async def get_book_by_isbn(db: Session, isbn: str, request: Request=None, bt: BackgroundTasks=None) -> DbBook:
     book = db.query(DbBook).filter(DbBook.isbn == isbn).first()
 
     if book.publication_year == 0:
@@ -30,11 +30,14 @@ async def get_book_by_isbn(request: Request, db: Session, isbn: str) -> DbBook:
                 open_library_json = open_library_response.json()
                 if open_library_api.update_book(open_library_json, book):
                     db.commit()
+                    bt.add_task(request.app.server_logger.info, f"The publication year of the book with isbn={book.isbn} has been successfully changed to {book.publication_year} using data from the Open Library API.")
             else:
                 print(f"Unexpected status code: {open_library_response.status_code}")
                 
         except Exception as e:
-            print(f"Exception occurred while updating using the Open Library API book data with isbn={isbn}: {e}")
+            error_msg = f"Exception occurred while updating using the Open Library API book data with isbn={isbn}: {e}"
+            print(error_msg)
+            bt.add_task(request.app.server_logger.error, error_msg)
 
     if not book:
         raise HTTPException(
@@ -105,8 +108,8 @@ def get_most_popular_books(db: Session, books_no: int):
 def get_similar_books(db: Session, books_no: int, isbn: str | None = None, title: str | None = None):
     book_title = title
     if isbn:
-        book_title = get_book_by_isbn(db, isbn).title
-    
+        book = db.query(DbBook).filter(DbBook.isbn == isbn).first()
+        book_title = book.title
     if not book_title:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,

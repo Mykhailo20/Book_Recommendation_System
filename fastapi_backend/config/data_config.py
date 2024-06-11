@@ -1,10 +1,12 @@
+import os
+import logging
 import pickle
 
 import pandas as pd
 from contextlib import asynccontextmanager
 import httpx
 
-from config.files_config import BOOKS_DATA_FILEPATH, RATINGS_DATA_FILEPATH, PIVOT_TABLE_FILEPATH, SIMILARITY_SCORES_FILEPATH, BOOKS_POPULARITY_DATA_FILEPATH
+from config.files_config import BOOKS_DATA_FILEPATH, RATINGS_DATA_FILEPATH, PIVOT_TABLE_FILEPATH, SIMILARITY_SCORES_FILEPATH, BOOKS_POPULARITY_DATA_FILEPATH, APPLICATION_LOGGING_FILEPATH
 
 
 POPULARITY_RS_RECOMMEND_BOOKS_NO = 10
@@ -34,6 +36,23 @@ RS_INTEGRITY_ERROR_PATTERNS = {
         "answer_func": lambda title: f"Book with title '{title}' not found."
     }
 }
+
+def configure_logging():
+
+    # Check if the log file exists, create it if it doesn't
+    if not os.path.exists(APPLICATION_LOGGING_FILEPATH):
+        open(APPLICATION_LOGGING_FILEPATH, 'w').close()
+        
+    server_logger = logging.getLogger('oltp')
+    server_logger.setLevel(logging.DEBUG)
+    server_handler = logging.FileHandler(APPLICATION_LOGGING_FILEPATH)
+    server_handler.setLevel(logging.DEBUG)
+    server_formatter = logging.Formatter('[%(asctime)s] - %(levelname)s: %(message)s')
+    server_handler.setFormatter(server_formatter)
+    server_logger.addHandler(server_handler)
+
+    return server_logger
+
 
 data = {
 
@@ -65,9 +84,12 @@ async def lifespan(app):
         books_popularity_data_filepath=BOOKS_POPULARITY_DATA_FILEPATH
     )
     app.open_library_http_client = httpx.AsyncClient()
+    app.server_logger = configure_logging()
+    app.server_logger.info(f"Application Started.")
 
     yield
 
     # shutdown
     data.clear()
     await app.open_library_http_client.aclose()
+    app.server_logger.info(f"Application Finished.\n")
