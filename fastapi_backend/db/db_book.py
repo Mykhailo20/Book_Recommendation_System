@@ -3,12 +3,13 @@ from sqlalchemy import func, desc
 from sqlalchemy.orm.session import Session
 
 from db.models import DbBook, DbRating
+from book_recommendation_systems import popularity_rs, one_book_rs
+from utils.data_converters import book_converter
+from utils.external_apis import open_library_api
+from utils import get_error_details
+
 from config.data_config import data
 from config.auth_config import OPEN_LIBRARY_ISBN_BASE_API
-from book_recommendation_systems import popularity_rs, one_book_rs
-
-from utils.data_converters import book_converter
-from utils import get_error_details
 
 
 async def get_book_by_isbn(request: Request, db: Session, isbn: str) -> DbBook:
@@ -27,12 +28,13 @@ async def get_book_by_isbn(request: Request, db: Session, isbn: str) -> DbBook:
             # Check the final response status code
             if open_library_response.status_code == status.HTTP_200_OK:
                 open_library_json = open_library_response.json()
-                print(f"open_library_response.json() = {open_library_json}")
+                if open_library_api.update_book(open_library_json, book):
+                    db.commit()
             else:
                 print(f"Unexpected status code: {open_library_response.status_code}")
                 
         except Exception as e:
-            print(f"Exception occurred: {e}")
+            print(f"Exception occurred while updating using the Open Library API book data with isbn={isbn}: {e}")
 
     if not book:
         raise HTTPException(
