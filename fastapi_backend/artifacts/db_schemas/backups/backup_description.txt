@@ -1,0 +1,7 @@
+1) db_v1_backup:
+    1.1) Create a 'url_domain' domain.
+    1.2) Create 'book', 'user' and 'rating' tables.
+
+2) db_v2_backup:
+    2.1) Add fields 'created_at' and 'updated_at' for 'book', 'user' and 'rating' tables.
+    2.2) Create triggers to update the 'updated_at' field when updating data in the 'book', 'user' and 'rating' tables.
