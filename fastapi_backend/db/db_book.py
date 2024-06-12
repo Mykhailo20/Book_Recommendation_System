@@ -1,3 +1,4 @@
+from datetime import datetime, timedelta
 from fastapi import HTTPException, status, Request, BackgroundTasks
 from sqlalchemy import func, desc
 from sqlalchemy.orm.session import Session
@@ -8,14 +9,15 @@ from utils.data_converters import book_converter
 from utils.external_apis import open_library_api
 from utils import get_error_details
 
-from config.data_config import data
+from config.data_config import data, MIN_INTERVAL_BETWEEN_BOOK_UPDATE_CHECKS
 from config.auth_config import OPEN_LIBRARY_ISBN_BASE_API
 
 
 async def get_book_by_isbn(db: Session, isbn: str, request: Request=None, bt: BackgroundTasks=None) -> DbBook:
     book = db.query(DbBook).filter(DbBook.isbn == isbn).first()
 
-    if book.publication_year == 0:
+    if (book.publication_year == 0) and (datetime.now() - book.updated_at >= MIN_INTERVAL_BETWEEN_BOOK_UPDATE_CHECKS):
+        print(f"Making a request to get a correct publication_year for book with isbn = {isbn} from Open Library API.")
         try:
             open_library_response = await request.app.open_library_http_client.get(f"{OPEN_LIBRARY_ISBN_BASE_API}/{isbn}.json")
             

@@ -16,7 +16,6 @@ app.include_router(rating.router)
 
 @app.get("/")
 def index():
-    print(f"main.index")
     return {
         "data": "Hello, World!"
     }

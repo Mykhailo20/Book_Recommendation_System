@@ -1,3 +1,4 @@
+from datetime import datetime
 from fastapi import HTTPException, status
 from sqlalchemy.orm.session import Session
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
@@ -15,7 +16,9 @@ def create_user(db: Session, request: UserBase):
         user = DbUser(
             username=request.username,
             email=request.email,
-            password=Hash.bcrypt(request.password)
+            password=Hash.bcrypt(request.password),
+            created_at=datetime.now(),
+            updated_at=datetime.now()
         )
         db.add(user)
         db.commit()
@@ -70,8 +73,6 @@ def get_user_by_username(db: Session, username: str):
 
 def get_user_rated_books(db: Session, user_id: int):
     check_user(db, user_id)
-    
-
     books = db.query(DbBook).join(DbRating, DbBook.isbn == DbRating.isbn).filter(DbRating.user_id == user_id).all()
     return books
 

@@ -1,3 +1,4 @@
+from datetime import datetime
 from fastapi import HTTPException, status
 from sqlalchemy.orm.session import Session
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
@@ -16,7 +17,9 @@ def create_rating(db: Session, request: RatingBase, current_user_id: int):
         rating = DbRating(
             isbn = request.isbn,
             user_id = request.user_id,
-            rating = request.rating
+            rating = request.rating,
+            created_at = datetime.now(),
+            updated_at = datetime.now()
         )
         db.add(rating)
         db.commit()

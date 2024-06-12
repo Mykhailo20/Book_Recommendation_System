@@ -1,6 +1,7 @@
 import os
 import logging
 import pickle
+from datetime import timedelta
 
 import pandas as pd
 from contextlib import asynccontextmanager
@@ -14,6 +15,7 @@ ONE_BOOK_RS_RECOMMEND_BOOKS_NO = 5
 BOOKS_LIST_RS_RECOMMEND_BOOKS_NO = 10
 AUTHORS_NO = 50
 BOOK_DEFAULT_RATING = 5
+MIN_INTERVAL_BETWEEN_BOOK_UPDATE_CHECKS = timedelta(days=1)
 
 DB_INTEGRITY_ERROR_PATTERNS = {
     "username_unique": {
