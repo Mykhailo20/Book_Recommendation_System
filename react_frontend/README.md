@@ -1,7 +1,8 @@
+# react_frontend
 The frontend part of the [book recommendation web application](https://github.com/Mykhailo20/Book_Recommendation_System) implemented using React, Redux and Tailwind CSS.
 
 ## :open_file_folder: Project Files Description
-This part of the project contains the following key files and directories:
+This part of the project contains the following key files and folders:
 1. **src**: Contains the main source code of the project, including subfolders for assets, components, pages, and Redux state management.
 2. **.eslintrc.js**: Contains the ESLint configuration for maintaining code quality and consistency.
 3. **.gitignore**: Specifies which files and directories should be ignored by Git, preventing them from being committed to the repository.

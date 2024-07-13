@@ -14,6 +14,30 @@
 ## :dart: Objective
 Develop an intuitive and efficient book recommendation system that enhances user experience by providing book suggestions based on collaborative filtering techniques.
 
+## :hammer_and_wrench: Technologies Used
+[![made-with-jupyter](https://img.shields.io/badge/Made%20with%20-%20Jupyter%20-%20orange?style=flat&logo=jupyter)](https://jupyter.org/) <br>
+[![made-with-python](https://img.shields.io/badge/Made%20with%20-%20Python%20-%20blue?style=flat&logo=python)](https://www.python.org/) <br>
+[![made-with-react](https://img.shields.io/badge/Made%20with%20-%20React%20-%20red?style=flat&logo=react)](https://react.dev/) <br>
+<p align='center'>
+   <img src='readme_files/diagrams/technologies_used.png' alt='system_diagram'>
+</p>
+
+The following technologies where used in this project:
+- **Working with Data**:
+  - **Jupyter Lab**: Interactive notebook development, code writing, and data analysis.
+  - **Pandas**: Data processing and analysis.
+  - **Matplotlib and Seaborn**: Data visualization.
+  - **Scikit-Learn**: Exploratory data analysis and machine learning.
+- **Backend Part**:
+  - **FastAPI**: Modern, high-performance Python web framework for building APIs.
+  - **SQLAlchemy**: Python SQL and Object Relational Mapper toolkit; provides developers with the full capabilities of SQL.
+  - **PostgreSQL**: Popular open source relational database management system (DBMS) known for its reliability, scalability, and extensive feature set.
+- **Frontend Part**:
+  - **React**: JavaScript library for creating interactive user interfaces and a wide range of web applications.
+  - **Redux**: JavaScript library designed to manage the state of JavaScript applications.
+  - **Tailwind CSS**: Utility CSS framework that provides a set of pre-designed utility classes; facilitates rapid style writing and user interface creation.
+
+
 ## :bar_chart: Project pipeline
 <p align='center'>
    <img src='readme_files/diagrams/system_diagram.png' alt='system_diagram'>
